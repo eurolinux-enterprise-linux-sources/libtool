@@ -3,7 +3,7 @@
 Summary: The GNU Portable Library Tool
 Name:    libtool
 Version: 2.4.2
-Release: 21%{?dist}
+Release: 22%{?dist}
 License: GPLv2+ and LGPLv2+ and GFDL
 URL:     http://www.gnu.org/software/libtool/
 Group:   Development/Tools
@@ -16,6 +16,14 @@ Patch1:  libtool-2.4.2-TEMPORARY-disable-gcj-tests.patch
 # ~> Downstream - tar is not used in upstream 'master' branch anymore, will be
 #    fixed in next release.
 Patch2:  libtool-2.4.2-tar-no-owner.patch
+
+# Handle ENOMEM properly
+# ~> #1404635
+# ~> upstream: b5d44b8447039
+Patch3: libtool-2.4.2-ENOMEM-1.patch
+# ~> upstream: f003a1f96e67f
+Patch4: libtool-2.4.2-ENOMEM-2.patch
+
 
 Requires(post):  /sbin/install-info
 Requires(preun): /sbin/install-info
@@ -80,6 +88,8 @@ Static libraries and header files for development with ltdl.
 %patch0 -p1 -b .rpath
 %patch1 -p1 -b .temp-disable-gcj-test
 %patch2 -p1 -b .tar-no-same-owner
+%patch3 -p1 -b .ENOMEM-1
+%patch4 -p1 -b .ENOMEM-2
 
 %build
 
@@ -159,6 +169,9 @@ fi
 %{_libdir}/libltdl.so
 
 %changelog
+* Fri Jan 20 2017 Pavel Raiskup <praiskup@redhat.com> - 2.4.2-22
+- fix ENOMEM issues in libltdl (rhbz#1404635)
+
 * Wed Dec 09 2015 Pavel Raiskup <praiskup@redhat.com> - 2.4.2-21
 - rebuild for new gcc (rhbz#1287191)
 

@@ -1,0 +1,31 @@
+From 3f91af8052486127ce787a91d47fadc033948877 Mon Sep 17 00:00:00 2001
+From: Pavel Raiskup <praiskup@redhat.com>
+Date: Mon, 16 Jan 2017 14:58:59 +0100
+Subject: [PATCH] libltdl: handle ENOMEM in lt_dlloader_remove()
+
+Reported by Alexander Hass.
+
+* libltdl/lt_dlloader.c (lt_dlloader_remove): Detect NULL return
+value from lt_dlinterface_register.
+---
+ libltdl/lt_dlloader.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/libltdl/lt_dlloader.c b/libltdl/lt_dlloader.c
+index 2c99a22..ed45195 100644
+--- a/libltdl/lt_dlloader.c
++++ b/libltdl/lt_dlloader.c
+@@ -167,6 +167,10 @@ lt_dlloader_remove (const char *name)
+ 
+   /* Fail if there are any open modules which use this loader.  */
+   iface = lt_dlinterface_register (id_string, NULL);
++  if (!iface)
++    /* No memory, error is already set. */
++    return 0;
++
+   while ((handle = lt_dlhandle_iterate (iface, handle)))
+     {
+       lt_dlhandle cur = handle;
+-- 
+2.9.3
+
